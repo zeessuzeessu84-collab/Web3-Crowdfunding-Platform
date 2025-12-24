@@ -1,8 +1,8 @@
-hhhhftgvhhgggtgggghgggffghhyygyyhuuhhffggghftffyydrrrrrt55ggggtyyyggggggggggyghhhgghhtgggf7gv{
+{
   "name": "web3-crowdfunding",
   "version": "1.0.0",
-  "devDepenj
-    "@nomicfoundation/hardhat-tool
-fgg
-ttt
-55y
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^4.0.0",
+    "hardhat": "^2.19.0"
+  }
+}
