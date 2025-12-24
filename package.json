@@ -1,7 +1,7 @@
 {
   "name": "web3-crowdfunding",
   "version": "1.0.0",
-  "devDependencies": {
+  "devDependencies":
     "@nomicfoundation/hardhat-toolbox": "^4.0.0",
     "hardhat": "^2.19.0"
 
