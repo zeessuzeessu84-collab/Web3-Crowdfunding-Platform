@@ -48,16 +48,28 @@ contract CrowdFunding {
         campaign.amountCollected += amount;
     }
 
-    // Pese nikalne ke liye (Sirf Owner)
-    function withdraw(uint256 _id) public {
-        Campaign storage campaign = campaigns[_id];
-        require(msg.sender == campaign.owner, "Only owner can withdraw.");
-        require(campaign.amountCollected >= campaign.target, "Goal not reached.");
-        require(!campaign.claimed, "Already claimed.");
-
-        campaign.claimed = true;
-        payable(campaign.owner).transfer(campaign.amountCollected);
-    }
+    // CEI pattern added on withdraw function
+ function withdraw(uint256 _id) public {
+    require(_id < numberOfCampaigns, "Campaign does not exist");
+    
+    Campaign storage campaign = campaigns[_id];
+    
+    // CHECKS
+    require(msg.sender == campaign.owner, "Only owner can withdraw");
+    require(block.timestamp >= campaign.deadline, "Campaign not ended");
+    require(campaign.amountCollected >= campaign.target, "Goal not reached");
+    require(!campaign.claimed, "Already claimed");
+    require(campaign.amountCollected > 0, "No funds to withdraw");
+    
+    // EFFECTS (update state BEFORE external calls)
+    uint256 amount = campaign.amountCollected;
+    campaign.claimed = true;
+    campaign.amountCollected = 0;  // Prevent reentrancy via multiple withdrawals
+    
+    // INTERACTIONS (external call LAST)
+    (bool success, ) = payable(campaign.owner).call{value: amount}("");
+    require(success, "Transfer failed");
+}
 
     function getCampaigns() public view returns (Campaign[] memory) {
         Campaign[] memory allCampaigns = new Campaign[](numberOfCampaigns);
